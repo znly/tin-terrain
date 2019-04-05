@@ -54,9 +54,9 @@ find_package(Boost REQUIRED COMPONENTS
 )
 
 include("download-deps.cmake")
-find_path(TNTN_LIBGLM_SOURCE_DIR NAMES "glm/glm.hpp" HINTS "${CMAKE_SOURCE_DIR}/3rdparty/glm-0.9.9.0/")
-find_path(TNTN_LIBFMT_SOURCE_DIR NAMES "include/fmt/format.h" HINTS "${CMAKE_SOURCE_DIR}/3rdparty/fmt-5.1.0/")
-find_path(TNTN_CATCH2_SOURCE_DIR NAMES "catch.hpp" HINTS "${CMAKE_SOURCE_DIR}/3rdparty/Catch2-2.3.0/")
+find_path(TNTN_LIBGLM_SOURCE_DIR NAMES "glm/glm.hpp" HINTS "${PROJECT_SOURCE_DIR}/3rdparty/glm-0.9.9.0/")
+find_path(TNTN_LIBFMT_SOURCE_DIR NAMES "include/fmt/format.h" HINTS "${PROJECT_SOURCE_DIR}/3rdparty/fmt-5.1.0/")
+find_path(TNTN_CATCH2_SOURCE_DIR NAMES "catch.hpp" HINTS "${PROJECT_SOURCE_DIR}/3rdparty/Catch2-2.3.0/")
 
 if(NOT TNTN_LIBGLM_SOURCE_DIR)
     message(SEND_ERROR "GLM math library source dir not found, please download and set TNTN_LIBGLM_SOURCE_DIR")

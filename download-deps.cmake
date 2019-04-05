@@ -122,19 +122,19 @@ endfunction()
 
 download_verify_unpack(
     "https://github.com/fmtlib/fmt/archive/5.1.0.tar.gz"
-    "${CMAKE_SOURCE_DIR}/3rdparty/libfmt-5.1.0.tar.gz"
+    "${PROJECT_SOURCE_DIR}/3rdparty/libfmt-5.1.0.tar.gz"
     "b759a718353254fa8cd981e483bf01a45af0fc76901216404ace5e47f5d3edf43d42422184e5413c221e49832322fdf60d1860e8ec87349c674511064b31e5d6"
 )
 
 download_verify_unpack(
     "https://github.com/g-truc/glm/archive/0.9.9.0.tar.gz"
-    "${CMAKE_SOURCE_DIR}/3rdparty/libglm-0.9.9.0.tar.gz"
+    "${PROJECT_SOURCE_DIR}/3rdparty/libglm-0.9.9.0.tar.gz"
     "b7a6996cb98bc334130c33a339275b50ea28d8dfce300f3d14ac52edf0b5c38bf216d318f411e898edef428876c0b2d1f6a6e951f160f31425fe0852ad150421"
 )
 
 download_verify_unpack(
     "https://github.com/catchorg/Catch2/releases/download/v2.3.0/catch.hpp"
-    "${CMAKE_SOURCE_DIR}/3rdparty/Catch2-2.3.0/catch.hpp"
+    "${PROJECT_SOURCE_DIR}/3rdparty/Catch2-2.3.0/catch.hpp"
     "62716213504195f0482f2aeb1fbdbc20dd96b5d7d3024bc68eaf19a3ba218d3a359163d17d5b6dd93ecc6c2a68573d9fdf9fae596f5f44bb6bab4b0598ad2790"
 )
 
@@ -142,7 +142,7 @@ if(TNTN_TEST)
     #see also http://oe.oregonexplorer.info/craterlake/
     download_verify_unpack(
         "http://oe.oregonexplorer.info/craterlake/products/dem/dems_10m.zip"
-        "${CMAKE_SOURCE_DIR}/3rdparty/craterlake/dems_10m.zip"
+        "${PROJECT_SOURCE_DIR}/3rdparty/craterlake/dems_10m.zip"
         "c677ac64dd3e443edebf0cdbb8e8785eb2d1dee864d1011b00bd0ef1745c72e4305f81d6630db240a31205d3b7ebed2dd0d52f468c0222013d6d79312a830ae0"
     )
 
@@ -151,7 +151,7 @@ if(TNTN_TEST)
     #look at tile tq3389_DSM_50CM.asc - Tottenham for an interesting city DSM
     download_verify_unpack(
         "https://environment.data.gov.uk/UserDownloads/interactive/dcbcae4faa49490186edaa3b991025f549808/LIDARCOMP/LIDAR-DSM-50CM-TQ38nw.zip"
-        "${CMAKE_SOURCE_DIR}/3rdparty/uk-lidar-composite/LIDAR-DSM-50CM-TQ38nw.zip"
+        "${PROJECT_SOURCE_DIR}/3rdparty/uk-lidar-composite/LIDAR-DSM-50CM-TQ38nw.zip"
         "f0c8f1cfbffba35122f1be6ba77df15a1f0c666cf4d49b44410bc9ea782cde46c1c24d9e0936aaf477d6a717cfcea64ebc8421155664929cb828e9806748c16b"
     )
 endif()
