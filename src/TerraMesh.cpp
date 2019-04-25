@@ -61,7 +61,7 @@ void TerraMesh::greedy_insert(double max_error)
     {
         Candidate candidate = m_candidates.grab_greatest();
 
-        if(candidate.importance < m_max_error) continue;
+        if(candidate.importance < m_max_error * (candidate.edge ? 0.5 : 1.0)) continue;
 
         // Skip if the candidate is not the latest
         if(m_token.value(candidate.y, candidate.x) != candidate.token) continue;
@@ -106,6 +106,37 @@ void TerraMesh::scan_triangle_line(const Plane& plane,
     }
 }
 
+void TerraMesh::scan_line_vertical(const Plane& plane,
+                                   int x,
+                                   double y1,
+                                   double y2,
+                                   Candidate& candidate,
+                                   const double no_data_value)
+{
+    const int starty = static_cast<int>(ceil(fmin(y1, y2)));
+    const int endy = static_cast<int>(floor(fmax(y1, y2)));
+
+    if(starty > endy) return;
+
+    double z0 = plane.eval(x, starty);
+    double dz = plane.b;
+
+    for(int y = starty; y <= endy; y++)
+    {
+        if(!m_used.value(y, x))
+        {
+            const double z = m_raster->value(y, x);
+            if(!is_no_data(z, no_data_value))
+            {
+                const double diff = fabs(z - z0);
+                //TNTN_LOG_DEBUG("candidate consider: ({}, {}, {}), diff: {}", x, y, z, diff);
+                candidate.consider(x, y, z, diff);
+            }
+        }
+        z0 += dz;
+    }
+}
+
 void TerraMesh::scan_triangle(dt_ptr t)
 {
     Plane z_plane;
@@ -124,10 +155,53 @@ void TerraMesh::scan_triangle(dt_ptr t)
     const double v2_x = by_y[2].x;
     const double v2_y = by_y[2].y;
 
+    const double no_data_value = m_raster->get_no_data_value();
+
+    Candidate candidate_v = {0, 0, 0.0, -DBL_MAX, m_counter++, t};
+    Candidate candidate_h = {0, 0, 0.0, -DBL_MAX, m_counter++, t};
+    const double w = m_raster->get_width()-1;
+    const double h = m_raster->get_height()-1;
+
+    for (int i = 0; i < 3; i++) {
+        int ii = (i + 1) % 3;
+
+        if ((by_y[i].x == 0 && by_y[ii].x == 0) ||
+            (by_y[i].x == w && by_y[ii].x == w)) {
+            //printf("scane v_edge\n");
+
+            // edge left/right
+            scan_line_vertical(z_plane, by_y[i].x, by_y[i].y, by_y[ii].y, candidate_v, no_data_value);
+
+        } else if ((by_y[i].y == 0 && by_y[ii].y == 0) ||
+                   (by_y[i].y == h && by_y[ii].y == h)) {
+            //printf("scan h_edge\n");
+            // edge top/bottom
+            scan_triangle_line(z_plane, by_y[i].y, by_y[i].x, by_y[ii].x, candidate_h, no_data_value);
+        }
+    }
+
+    bool v_edge = candidate_v.importance != -DBL_MAX;
+    bool h_edge = candidate_h.importance != -DBL_MAX;
+
+    if (v_edge || h_edge) {
+        if (v_edge) {
+            //printf("v_edge\n");
+            m_token.value(candidate_v.y, candidate_v.x) = candidate_v.token;
+            candidate_v.edge = true;
+            m_candidates.push_back(candidate_v);
+        }
+        if (h_edge) {
+            //printf("h_edge\n");
+            m_token.value(candidate_h.y, candidate_h.x) = candidate_h.token;
+            candidate_h.edge = true;
+            m_candidates.push_back(candidate_h);
+        }
+        return;
+    }
+
     Candidate candidate = {0, 0, 0.0, -DBL_MAX, m_counter++, t};
 
     const double dx2 = (v2_x - v0_x) / (v2_y - v0_y);
-    const double no_data_value = m_raster->get_no_data_value();
 
     if(v1_y != v0_y)
     {

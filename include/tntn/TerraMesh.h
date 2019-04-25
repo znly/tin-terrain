@@ -28,6 +28,13 @@ class TerraMesh : public TerraBaseMesh
                             Candidate& candidate,
                             const double no_data_value);
 
+    void scan_line_vertical(const Plane& plane,
+                            int x,
+                            double y1,
+                            double y2,
+                            Candidate& candidate,
+                            const double no_data_value);
+
   public:
     void greedy_insert(double max_error);
     void scan_triangle(dt_ptr t) override;

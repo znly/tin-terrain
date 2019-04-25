@@ -23,6 +23,7 @@ struct Candidate
     double importance = -DBL_MAX;
     int token = 0;
     dt_ptr triangle;
+    bool edge = false;
 
     void consider(int sx, int sy, double sz, double imp) noexcept
     {
@@ -35,8 +36,8 @@ struct Candidate
         }
     }
 
-    bool operator>(const Candidate& c) const noexcept { return (importance > c.importance); }
-    bool operator<(const Candidate& c) const noexcept { return (importance < c.importance); }
+    bool operator>(const Candidate& c) const noexcept { return edge != c.edge ? edge : (importance > c.importance); }
+    bool operator<(const Candidate& c) const noexcept { return edge != c.edge ? c.edge : (importance < c.importance); }
 };
 
 class CandidateList
