@@ -84,8 +84,8 @@ void SurfacePoints::load_from_raster(const RasterDouble& raster)
         if(z != nodataval)
         {
             Vertex v(x, y, z);
-            m_points.emplace_back(v);
-            m_bbox.add(v);
+            this->m_points.emplace_back(v);
+            this->m_bbox.add(v);
         }
     });
 }
