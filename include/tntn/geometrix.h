@@ -142,7 +142,7 @@ struct BBox2D
     template<typename Iterator>
     void add(Iterator begin, const Iterator end)
     {
-        std::for_each(begin, end, [this](const auto& v) { add(v); });
+        std::for_each(begin, end, [this](const auto& v) { this->add(v); });
     }
 
     bool intersects(const BBox2D& other, const double epsilon = eps) const;
@@ -177,7 +177,7 @@ struct BBox3D
     template<typename Iterator>
     void add(Iterator begin, const Iterator end)
     {
-        std::for_each(begin, end, [this](const auto& v) { add(v); });
+        std::for_each(begin, end, [this](const auto& v) { this->add(v); });
     }
 
     bool contains(const glm::dvec3 point, const double epsilon = eps) const;
