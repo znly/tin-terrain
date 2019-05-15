@@ -1,7 +1,6 @@
 #include "tntn/geometrix.h"
 
 #include "glm/glm.hpp"
-#include "glm/gtx/normal.hpp"
 
 #include <algorithm>
 
@@ -33,8 +32,12 @@ bool triangle_semantic_equal::operator()(const Triangle& l, const Triangle& _r) 
     return false;
 #else
     //compare winding
-    const glm::dvec3 ln = glm::triangleNormal(l[0], l[1], l[2]);
-    const glm::dvec3 rn = glm::triangleNormal(r[0], r[1], r[2]);
+    auto triangleNormal = [](auto& p1, auto& p2, auto& p3) {
+                              return glm::normalize(glm::cross(p1 - p2, p1 - p3));
+                          };
+
+    const glm::dvec3 ln = triangleNormal(l[0], l[1], l[2]);
+    const glm::dvec3 rn = triangleNormal(r[0], r[1], r[2]);
     if((ln.x > 0 && rn.x <= 0) || (ln.y > 0 && rn.y <= 0) || (ln.z > 0 && rn.z <= 0))
     {
         return false;
@@ -179,11 +182,11 @@ BBox2D::BBox2D(glm::vec2 a, glm::vec2 b) : BBox2D(glm::dvec2(a.x, a.y), glm::dve
 
 BBox2D::BBox2D(glm::vec3 a, glm::vec3 b) : BBox2D(glm::dvec2(a.x, a.y), glm::dvec2(b.x, b.y)) {}
 
-BBox2D::BBox2D(glm::dvec3 a, glm::dvec3 b) : BBox2D(a.xy(), b.xy()) {}
+BBox2D::BBox2D(glm::dvec3 a, glm::dvec3 b) : BBox2D(glm::dvec2(a), glm::dvec2(b)) {}
 
-BBox2D::BBox2D(const Triangle& t) : BBox2D(t[0].xy(), t[1].xy())
+BBox2D::BBox2D(const Triangle& t) : BBox2D(glm::dvec2(t[0]), glm::dvec2(t[1]))
 {
-    add(t[2].xy());
+    add(glm::dvec2(t[2]));
 }
 
 void BBox2D::reset()
@@ -207,19 +210,19 @@ void BBox2D::add(glm::dvec2 p)
 
 void BBox2D::add(glm::vec3 p)
 {
-    add(p.xy());
+    add(glm::dvec2(p));
 }
 
 void BBox2D::add(glm::dvec3 p)
 {
-    add(p.xy());
+    add(glm::dvec2(p));
 }
 
 void BBox2D::add(const Triangle& t)
 {
     for(int i = 0; i < 3; i++)
     {
-        add(t[i].xy());
+        add(t[i]);
     }
 }
 
@@ -445,11 +448,11 @@ glm::dvec3 intersect_25D_linesegment_by_line(glm::dvec3 p0,
     //interpolate z
 
     //z = mx + n
-    const double d_p0p1 = glm::distance(p0.xy(), p1.xy());
+    const double d_p0p1 = glm::distance(glm::dvec2(p0), glm::dvec2(p1));
     const double m = (p1.z - p0.z) / d_p0p1;
     const double n = p0.z;
 
-    const double d_p0c = glm::distance(p0.xy(), c.xy());
+    const double d_p0c = glm::distance(glm::dvec2(p0), glm::dvec2(c));
     if(d_p0c < 0.0 - eps || d_p0c > (d_p0p1 + eps))
     {
         return glm::dvec3(NAN, NAN, NAN);

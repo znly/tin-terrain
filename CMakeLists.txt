@@ -202,7 +202,7 @@ add_library(tntn STATIC
 
 target_compile_definitions(tntn PUBLIC $<$<CONFIG:Debug>:TNTN_DEBUG>)
 
-target_compile_definitions(tntn PUBLIC GLM_FORCE_SWIZZLE GLM_ENABLE_EXPERIMENTAL)
+#target_compile_definitions(tntn PUBLIC GLM_FORCE_SWIZZLE GLM_ENABLE_EXPERIMENTAL)
 
 if(TNTN_DOWNLOAD_ADDONS)
     target_compile_definitions(tntn PUBLIC TNTN_USE_ADDONS=1)

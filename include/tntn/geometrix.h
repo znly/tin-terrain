@@ -166,7 +166,7 @@ struct BBox3D
 
     void reset();
 
-    BBox2D to2D() const { return BBox2D(min.xy(), max.xy()); }
+    BBox2D to2D() const { return BBox2D(glm::vec2(min), glm::vec2(max)); }
 
     void add(glm::vec3 point);
     void add(glm::dvec3 point);

@@ -7,7 +7,6 @@
 #include "tntn/logging.h"
 
 #include "glm/glm.hpp"
-#include "glm/gtx/normal.hpp"
 
 #include <vector>
 #include <string>
