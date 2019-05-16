@@ -1,7 +1,6 @@
 #include "tntn/ZemlyaMesh.h"
 #include "tntn/TerraUtils.h"
 #include "tntn/logging.h"
-#include "tntn/SurfacePoints.h"
 #include "tntn/DelaunayTriangle.h"
 #include "tntn/raster_tools.h"
 
@@ -300,52 +299,59 @@ void ZemlyaMesh::scan_triangle(dt_ptr t)
         t->point3(),
     }};
     terra::order_triangle_points(by_y);
-    const double v0_x = by_y[0].x;
-    const double v0_y = by_y[0].y;
-    const double v1_x = by_y[1].x;
-    const double v1_y = by_y[1].y;
-    const double v2_x = by_y[2].x;
-    const double v2_y = by_y[2].y;
 
     terra::Candidate candidate = {0, 0, 0.0, -DBL_MAX, m_counter++, t};
 
-    const double dx2 = (v2_x - v0_x) / (v2_y - v0_y);
     const double no_data_value = m_raster->get_no_data_value();
+    int w = m_raster->get_width();
+    int h = m_raster->get_height();
 
-    if(v1_y != v0_y)
-    {
-        const double dx1 = (v1_x - v0_x) / (v1_y - v0_y);
+    auto fill_top = [&](const auto &p0, const auto &p1, const auto &p2) {
+        const double dx1 = (p1.x - p0.x) / (p1.y - p0.y);
+        const double dx2 = (p2.x - p0.x) / (p2.y - p0.y);
 
-        double x1 = v0_x;
-        double x2 = v0_x;
+        double x1 = p0.x;
+        double x2 = p0.x;
 
-        const int starty = v0_y;
-        const int endy = v1_y;
+        int min_y = std::max(int(p0.y), 0);
+        int max_y = std::min(int(p1.y), int(h));
 
-        for(int y = starty; y < endy; y++)
-        {
+        for (int y = min_y; y < max_y; y++) {
             scan_triangle_line(z_plane, y, x1, x2, candidate, no_data_value);
             x1 += dx1;
             x2 += dx2;
         }
-    }
+    };
 
-    if(v2_y != v1_y)
-    {
-        const double dx1 = (v2_x - v1_x) / (v2_y - v1_y);
+    auto fill_bottom = [&](const auto &p0, const auto &p1, const auto &p2) {
+        const double dx1 = (p2.x - p0.x) / (p2.y - p0.y);
+        const double dx2 = (p2.x - p1.x) / (p2.y - p1.y);
 
-        double x1 = v1_x;
-        double x2 = v0_x;
+        double x1 = p0.x;
+        double x2 = p1.x;
 
-        const int starty = v1_y;
-        const int endy = v2_y;
+        int min_y = std::max(int(p0.y), 0);
+        int max_y = std::min(int(p2.y), int(h));
 
-        for(int y = starty; y <= endy; y++)
-        {
+        for (int y = min_y; y < max_y; y++) {
             scan_triangle_line(z_plane, y, x1, x2, candidate, no_data_value);
             x1 += dx1;
             x2 += dx2;
         }
+    };
+
+    const auto p0 = by_y[0];
+    const auto p1 = by_y[1];
+    const auto p2 = by_y[2];
+
+    if (p1.y == p2.y) {
+        fill_top(p0, p1, p2);
+    } else if (p0.y == p1.y) {
+        fill_bottom(p0, p1, p2);
+    } else {
+        glm::dvec3 p3 { p0.x + ((p1.y - p0.y) / (p2.y - p0.y)) * (p2.x - p0.x), p1.y, 0.0 };
+        fill_top(p0, p1, p3);
+        fill_bottom(p1, p3, p2);
     }
 
     // We have now found the appropriate candidate point
