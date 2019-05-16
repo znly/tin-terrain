@@ -13,6 +13,7 @@
 #include "tntn/simple_meshing.h"
 #include "tntn/version_info.h"
 #include "tntn/RasterOverviews.h"
+#include "tntn/TileMaker.h"
 #include "tntn/println.h"
 
 #include <boost/filesystem.hpp>

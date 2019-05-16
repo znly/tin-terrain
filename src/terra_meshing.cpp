@@ -1,5 +1,4 @@
 #include "tntn/terra_meshing.h"
-#include "tntn/MeshIO.h"
 #include "tntn/TerraMesh.h"
 #include "tntn/tntn_assert.h"
 

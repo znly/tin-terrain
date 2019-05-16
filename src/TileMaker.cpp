@@ -4,6 +4,7 @@
 #include "tntn/geometrix.h"
 #include "tntn/Mesh.h"
 #include "tntn/MeshIO.h"
+#include "tntn/QuantizedMeshIO.h"
 #include "tntn/logging.h"
 
 #include "glm/glm.hpp"
@@ -14,6 +15,31 @@
 #include <cstdlib>
 
 namespace tntn {
+
+bool write_mesh_to_file(const char* filename, const Mesh& m, const FileFormat& f)
+{
+    if(f == FileFormat::OFF)
+    {
+        return write_mesh_as_off(filename, m);
+    }
+    else if(f == FileFormat::OBJ)
+    {
+        return write_mesh_as_obj(filename, m);
+    }
+    else if(f == FileFormat::TERRAIN)
+    {
+        return write_mesh_as_qm(filename, m);
+    }
+    else if(f == FileFormat::JSON || f == FileFormat::GEOJSON)
+    {
+        return write_mesh_as_geojson(filename, m);
+    }
+    else
+    {
+        TNTN_LOG_ERROR("unsupported file format {} for mesh output", f.to_cstring());
+        return false;
+    }
+}
 
 static bool triangle_could_be_in_tile(const Triangle& t, const BBox2D& tile_bounds)
 {

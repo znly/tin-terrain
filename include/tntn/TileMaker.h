@@ -2,10 +2,13 @@
 
 #include "tntn/Mesh.h"
 #include "tntn/MeshWriter.h"
+#include "tntn/FileFormat.h"
 
 #include <memory>
 
 namespace tntn {
+
+bool write_mesh_to_file(const char* filename, const Mesh& m, const FileFormat& f);
 
 class TileMaker
 {

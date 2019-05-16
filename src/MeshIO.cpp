@@ -2,7 +2,6 @@
 #include "tntn/OFFReader.h"
 #include "tntn/logging.h"
 #include "tntn/File.h"
-#include "tntn/QuantizedMeshIO.h"
 
 #include "fmt/format.h"
 #include <iostream>
@@ -10,31 +9,6 @@
 #include <set>
 
 namespace tntn {
-
-bool write_mesh_to_file(const char* filename, const Mesh& m, const FileFormat& f)
-{
-    if(f == FileFormat::OFF)
-    {
-        return write_mesh_as_off(filename, m);
-    }
-    else if(f == FileFormat::OBJ)
-    {
-        return write_mesh_as_obj(filename, m);
-    }
-    else if(f == FileFormat::TERRAIN)
-    {
-        return write_mesh_as_qm(filename, m);
-    }
-    else if(f == FileFormat::JSON || f == FileFormat::GEOJSON)
-    {
-        return write_mesh_as_geojson(filename, m);
-    }
-    else
-    {
-        TNTN_LOG_ERROR("unsupported file format {} for mesh output", f.to_cstring());
-        return false;
-    }
-}
 
 std::unique_ptr<Mesh> load_mesh_from_obj(const char* filename)
 {
