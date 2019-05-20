@@ -3,6 +3,7 @@
 #include "tntn/Raster.h"
 #include <vector>
 #include <string>
+#include "tntn/File.h"
 #include "tntn/geometrix.h"
 
 namespace tntn {
@@ -30,5 +31,10 @@ struct raster_tools //just a namespace
                                            const unsigned int column,
                                            int min_averaging_samples = 1);
 };
+
+RasterDouble load_raster_from_asc(const std::string& filename);
+
+bool write_raster_to_asc(const std::string& filename, const RasterDouble& raster);
+bool write_raster_to_asc(FileLike& f, const RasterDouble& raster);
 
 } // namespace tntn
