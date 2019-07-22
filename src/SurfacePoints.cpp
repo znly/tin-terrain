@@ -1,6 +1,8 @@
 #include "tntn/SurfacePoints.h"
 #include "tntn/logging.h"
+#ifdef TNTN_HAVE_GDAL
 #include "tntn/gdal_init.h"
+#endif
 
 #include <vector>
 #include <fstream>
@@ -9,9 +11,11 @@
 #include <algorithm>
 #include <iomanip>
 
+#ifdef TNTN_HAVE_GDAL
 #include "gdal.h"
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
+#endif
 
 namespace tntn {
 
@@ -296,6 +300,7 @@ std::unique_ptr<Raster<Vertex>> SurfacePoints::to_vxraster() const
     return vxraster;
 }
 
+#ifdef TNTN_HAVE_GDAL
 static bool create_points_from_raster(
     GDALRasterBand* band, double ox, double oy, double sx, double sy, SurfacePoints& points)
 {
@@ -375,4 +380,5 @@ bool SurfacePoints::load_from_gdal(const std::string& filename)
 
     return true;
 }
+#endif
 } //namespace tntn

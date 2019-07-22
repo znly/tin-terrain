@@ -33,7 +33,9 @@ class SurfacePoints
     bool empty() const { return size() == 0; }
 
     bool load_from_xyz_file(const std::string& filename);
+#ifdef TNTN_HAVE_GDAL
     bool load_from_gdal(const std::string& filename);
+#endif
     void load_from_memory(std::vector<Vertex>&& points);
     void load_from_raster(const RasterDouble& raster);
 
