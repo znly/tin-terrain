@@ -95,6 +95,7 @@ set(TNTN_MESHING_SOURCE_FILES
   include/tntn/simple_meshing.h
   src/DelaunayMesh.cpp
   src/DelaunayTriangle.cpp
+  src/Delaunator.cpp
   src/Mesh.cpp
   src/Mesh2Raster.cpp
   src/MeshIO.cpp
